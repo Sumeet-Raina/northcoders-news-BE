@@ -1,6 +1,31 @@
-# How to set up the .env files:
+## How to set up northcoders-news-BE project
 
-At the root of the project create below files
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Sumeet-Raina/northcoders-news-BE.git
+cd northcoders-news-BE
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+# How to set up the .env files and environment variables:
+
+Create `.env.development` and `.env.test` files in the project root directory.
+
+```.env
+# .env.development
+PGDATABASE=<name_of_your_development_database>
+```
+
+```.env
+# .env.test
+PGDATABASE=<name_of_your_test_database>
+```
 
 `.env.development` –> This file is used to set specific variables for development environment. Add `PGDATABASE=nc_news` to `.env.development`file to specify database name that we want to connect to when working in development environment.
 
