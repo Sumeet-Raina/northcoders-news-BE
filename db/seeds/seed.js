@@ -1,5 +1,6 @@
 const db = require("../connection");
 const format = require("pg-format");
+const { convertTimestampToDate, createRef } = require("../seeds/utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
@@ -17,13 +18,13 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(`CREATE TABLE users (
       username VARCHAR(255) PRIMARY KEY,
       name  VARCHAR(60) NOT NULL,
-      avatar_url VARCHAR(600));`);
+      avatar_url VARCHAR(1000));`);
     })
     .then(() => {
       return db.query(`CREATE TABLE topics (
       slug VARCHAR(255) PRIMARY KEY,
       description  VARCHAR(600),
-      img_url VARCHAR(600));`);
+      img_url VARCHAR(1000));`);
     })
     .then(() => {
       return db.query(`CREATE TABLE articles(
@@ -34,7 +35,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       body  TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       votes INTEGER DEFAULT 0,
-      article_img_url VARCHAR(600),
+      article_img_url VARCHAR(1000),
       FOREIGN KEY (topic) REFERENCES topics(slug),
       FOREIGN KEY (author) REFERENCES users(username));`);
     })
@@ -42,7 +43,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       return db.query(`CREATE TABLE comments( 
       comment_id SERIAL PRIMARY KEY,
       article_id INTEGER NOT NULL,
-      body VARCHAR(600),
+      body TEXT,
       votes INTEGER DEFAULT 0, 
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       author VARCHAR(100) NOT NULL,
@@ -71,38 +72,46 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     })
     .then(() => {
       const articlesTableData = articleData.map((article) => {
+        const formattedArticle = convertTimestampToDate(article);
         return [
-          article.title,
-          article.topic,
-          article.author,
-          article.body,
-          article.votes,
-          article.article_img_url,
+          formattedArticle.title,
+          formattedArticle.topic,
+          formattedArticle.author,
+          formattedArticle.body,
+          formattedArticle.created_at,
+          formattedArticle.votes,
+          formattedArticle.article_img_url,
         ];
       });
       const insertArticlesQuery = format(
-        `INSERT INTO articles(title, topic,author, body, votes, article_img_url) VALUES %L`,
+        `INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`,
         articlesTableData
       );
       return db.query(insertArticlesQuery);
+    })
+    .then((result) => {
+      const articlesRefObject = createRef(result.rows);
+      const commentsTableData = commentData.map((comment) => {
+        const formattedComments = convertTimestampToDate(comment);
+        return [
+          articlesRefObject[comment.article_title],
+          formattedComments.body,
+          formattedComments.votes,
+          formattedComments.author,
+          formattedComments.created_at,
+        ];
+      });
+
+      const insertCommentsQuery = format(
+        `INSERT INTO comments(article_id, body, votes, author, created_at) VALUES %L`,
+        commentsTableData
+      );
+
+      return db.query(insertCommentsQuery);
+    })
+    .then(() => {
+      console.log("Seed completed");
     });
-  // .then(() => {
-  //   const commentsTableData = commentData.map((comment) => {
-  //     return [
-  //       comment.article_id,
-  //       comment.body,
-  //       comment.votes,
-  //       comment.author,
-  //     ];
-  //   });
-
-  //   const insertCommentsQuery = format(
-  //     `INSERT INTO comments(article_id, body, votes, author) VALUES %L`,
-  //     commentsTableData
-  //   );
-
-  //   return db.query(insertCommentsQuery);
-  // });
 };
 
 module.exports = seed;
