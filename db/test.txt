@@ -1,0 +1,6 @@
+You are now connected to database "nc_news_test" as user "sumeet".
+DROP TABLE
+DROP TABLE
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
