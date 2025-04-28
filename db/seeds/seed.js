@@ -4,15 +4,15 @@ const { convertTimestampToDate, createRef } = require("../seeds/utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
-    .query(`DROP TABLE IF EXISTS topics;`)
-    .then(() => {
-      return db.query(`DROP TABLE IF EXISTS users;`);
-    })
+    .query(`DROP TABLE IF EXISTS comments;`)
     .then(() => {
       return db.query(`DROP TABLE IF EXISTS articles;`);
     })
     .then(() => {
-      return db.query(`DROP TABLE IF EXISTS comments;`);
+      return db.query(`DROP TABLE IF EXISTS users;`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS topics;`);
     })
     .then(() => {
       return db.query(`CREATE TABLE users (

@@ -1,9 +1,9 @@
 \c nc_news_test
 
-DROP TABLE IF EXISTS topics;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS articles;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS topics;
 
 CREATE TABLE users (
     username VARCHAR(255) PRIMARY KEY,
