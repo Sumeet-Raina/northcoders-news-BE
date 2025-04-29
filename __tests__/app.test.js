@@ -114,3 +114,17 @@ describe("GET /api/articles/:article_id/comments", () => {
     return request(app).get("/api/articles/700/comments").expect(404);
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Responds with an object that contains comment that was added", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "Good read, made me cry loads.",
+      })
+      .then((response) => {
+        expect(response.status).toBe(201);
+      });
+  });
+});
