@@ -2,6 +2,7 @@ const {
   selectArticleById,
   selectAllArticles,
   selectCommentsByArticleId,
+  insertCommentbyArticleId,
 } = require("../models/articles.models");
 
 exports.getArticlesById = async (request, response) => {
@@ -33,5 +34,14 @@ exports.getCommentsByArticleId = async (request, response) => {
       throw error;
     }
     response.status(200).send({ comments: rows });
+  });
+};
+
+exports.postCommentByArticleId = async (request, response) => {
+  const { article_id } = request.params;
+  const { username: author, body } = request.body;
+
+  await insertCommentbyArticleId(article_id, author, body).then((row) => {
+    response.status(201).send({ comment: row });
   });
 };
