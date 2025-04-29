@@ -65,3 +65,27 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
+describe("GET /api/articles", () => {
+  test("200: Responds with an object that contains all articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .then(({ body }) => {
+        body.articles.forEach((row) => {
+          expect(row).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("404: endpoint not found", () => {
+    return request(app).get("/api/nonexistent").expect(404);
+  });
+});
