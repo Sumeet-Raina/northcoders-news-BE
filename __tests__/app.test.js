@@ -32,11 +32,13 @@ describe("GET /api/topics", () => {
       .then((response) => {
         const { topics } = response.body;
         expect(topics.length).toBe(3);
+        topics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
       });
-  });
-
-  test("404: endpoint not found", () => {
-    return request(app).get("/api/nonexistent").expect(404);
   });
 });
 
@@ -61,7 +63,7 @@ describe("GET /api/articles/:article_id", () => {
   });
 
   test("404: endpoint not found", () => {
-    return request(app).get("/api/nonexistent").expect(404);
+    return request(app).get("/api/articles/7908888").expect(404);
   });
 });
 
@@ -87,5 +89,28 @@ describe("GET /api/articles", () => {
 
   test("404: endpoint not found", () => {
     return request(app).get("/api/nonexistent").expect(404);
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an object that contains all articles", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .then(({ body }) => {
+        body.comments.forEach((row) => {
+          expect(row).toMatchObject({
+            comment_id: expect.any(Number),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("404: endpoint not found", () => {
+    return request(app).get("/api/articles/700/comments").expect(404);
   });
 });
