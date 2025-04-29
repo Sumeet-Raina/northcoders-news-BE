@@ -14,12 +14,13 @@ afterAll(() => {
 });
 
 describe("GET /api", () => {
-  test.skip("200: Responds with an object detailing the documentation for each endpoint", () => {
+  test("200: Responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
-      .then(({ body: { endpoints } }) => {
-        expect(endpoints).toEqual(endpointsJson);
+      .then(({ body }) => {
+        console.log(body);
+        expect(body).toEqual(endpointsJson);
       });
   });
 });
@@ -63,3 +64,4 @@ describe("GET /api/articles/:article_id", () => {
     return request(app).get("/api/nonexistent").expect(404);
   });
 });
+
