@@ -7,3 +7,8 @@ exports.selectArticleById = async (articleId) => {
   );
   return rows;
 };
+
+exports.selectAllArticles = async () => {
+  const { rows } = await db.query("SELECT * FROM articles;");
+  return rows;
+};
