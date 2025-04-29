@@ -48,5 +48,28 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "get all comments for an article.",
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 5,
+          "article_id": 1,
+          "body": "I hate streaming noses",
+          "votes": 0,
+          "created_at": "2020-11-03T21:00:00.000Z",
+          "author": "icellusedkars"
+        },
+        {
+          "comment_id": 2,
+          "article_id": 1,
+          "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          "votes": 14,
+          "created_at": "2020-10-31T03:03:00.000Z",
+          "author": "butter_bridge"
+        }
+      ]
+    }
   }
 }

@@ -4,6 +4,7 @@ const { getTopics } = require("./src/controllers/topics.controller");
 const {
   getArticlesById,
   getArticles,
+  getCommentsByArticleId,
 } = require("./src/controllers/articles.controller");
 
 const app = express();
@@ -15,6 +16,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticlesById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
