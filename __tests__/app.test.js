@@ -19,7 +19,6 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body).toEqual(endpointsJson);
       });
   });
@@ -128,3 +127,32 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: Responds with an object that contains updated votes", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({
+        inc_votes: 10,
+      })
+      .then((response) => {
+        expect(response.status).toBe(200);
+        const { article } = response.body;
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 110,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+});
+
+/* I will add all the validation and status code tests
+ once I am done with all db queries, trying to focus on making
+ requests and db queries work at the moment */
