@@ -21,7 +21,9 @@ exports.getArticlesById = async (request, response) => {
 };
 
 exports.getArticles = (request, response) => {
-  selectAllArticles().then((rows) => {
+  const { sort_by = "created_at", order = "desc" } = request.query;
+
+  selectAllArticles(sort_by, order).then((rows) => {
     response.status(200).send({ articles: rows });
   });
 };

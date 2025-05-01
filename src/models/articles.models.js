@@ -8,8 +8,10 @@ exports.selectArticleById = async (articleId) => {
   return rows;
 };
 
-exports.selectAllArticles = async () => {
-  const { rows } = await db.query("SELECT * FROM articles;");
+exports.selectAllArticles = async (sort_by, order) => {
+  const { rows } = await db.query(
+    `SELECT * FROM articles ORDER BY ${sort_by} ${order}`
+  );
   return rows;
 };
 
