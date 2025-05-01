@@ -1,6 +1,7 @@
 const express = require("express");
 const { getApi } = require("./src/controllers/api.controller");
 const { getTopics } = require("./src/controllers/topics.controller");
+const { deleteCommentById } = require("./src/controllers/comments.controller");
 const {
   getArticlesById,
   getArticles,
@@ -26,6 +27,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.patch("/api/articles/:article_id", patchArticleById);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

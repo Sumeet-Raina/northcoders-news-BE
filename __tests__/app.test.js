@@ -153,6 +153,17 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("Responds with 204 status and no content, deletes the given comment by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .send()
+      .then((response) => {
+        expect(response.status).toBe(204);
+      });
+  });
+});
+
 /* I will add all the validation and status code tests
  once I am done with all db queries, trying to focus on making
- requests and db queries work at the moment */
+ requests and db queries work at the moment. */
