@@ -41,6 +41,24 @@ describe("GET /api/topics", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("200: Responds with an users object that contains all users", () => {
+    return request(app)
+      .get("/api/users")
+      .then((response) => {
+        const { users } = response.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id", () => {
   test("200: Responds with an article object that contains all data for aticle id provided", () => {
     return request(app)
@@ -164,6 +182,6 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-/* I will add all the validation and status code tests
+/* I will add all the validations and status code tests
  once I am done with all db queries, trying to focus on making
  requests and db queries work at the moment. */
