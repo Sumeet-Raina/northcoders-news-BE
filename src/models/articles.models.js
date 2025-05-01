@@ -22,10 +22,17 @@ exports.selectCommentsByArticleId = async (id) => {
 };
 
 exports.insertCommentbyArticleId = async (article_id, author, body) => {
-  console.log(article_id, author, body);
   const { rows } = await db.query(
     "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
     [article_id, author, body]
+  );
+  return rows[0];
+};
+
+exports.updateArticleById = async (article_id, inc_votes) => {
+  const { rows } = await db.query(
+    "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 returning *;",
+    [inc_votes, article_id]
   );
   return rows[0];
 };

@@ -3,6 +3,7 @@ const {
   selectAllArticles,
   selectCommentsByArticleId,
   insertCommentbyArticleId,
+  updateArticleById,
 } = require("../models/articles.models");
 
 exports.getArticlesById = async (request, response) => {
@@ -43,5 +44,14 @@ exports.postCommentByArticleId = async (request, response) => {
 
   await insertCommentbyArticleId(article_id, author, body).then((row) => {
     response.status(201).send({ comment: row });
+  });
+};
+
+exports.patchArticleById = async (request, response) => {
+  const { article_id: id } = request.params;
+  const { inc_votes } = request.body;
+
+  await updateArticleById(id, inc_votes).then((row) => {
+    response.status(200).send({ article: row });
   });
 };
