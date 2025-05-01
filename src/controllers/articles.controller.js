@@ -9,7 +9,6 @@ const {
 exports.getArticlesById = async (request, response) => {
   const id = request.params.article_id;
   await selectArticleById(id).then((rows) => {
-    console.log(rows);
     if (rows.length === 0) {
       const error = new Error("Article not found");
       error.status = 404;
@@ -20,12 +19,15 @@ exports.getArticlesById = async (request, response) => {
   });
 };
 
-exports.getArticles = (request, response) => {
-  const { sort_by = "created_at", order = "desc" } = request.query;
-
-  selectAllArticles(sort_by, order).then((rows) => {
-    response.status(200).send({ articles: rows });
-  });
+exports.getArticles = async (request, response) => {
+  const { sort_by = "created_at", order = "desc", topic } = request.query;
+  try {
+    await selectAllArticles(sort_by, order, topic).then((rows) => {
+      response.status(200).send({ articles: rows });
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getCommentsByArticleId = async (request, response) => {

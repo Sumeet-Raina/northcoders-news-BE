@@ -104,6 +104,14 @@ describe("GET /api/articles", () => {
       });
   });
 
+  test("200: Responds with an object that contains all articles by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .then((response) => {
+        expect(response.body.articles.length).toBe(12);
+      });
+  });
+
   test("404: endpoint not found", () => {
     return request(app).get("/api/nonexistent").expect(404);
   });

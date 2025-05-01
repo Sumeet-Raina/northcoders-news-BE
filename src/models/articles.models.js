@@ -8,7 +8,14 @@ exports.selectArticleById = async (articleId) => {
   return rows;
 };
 
-exports.selectAllArticles = async (sort_by, order) => {
+exports.selectAllArticles = async (sort_by, order, topic) => {
+  if (topic) {
+    const { rows } = await db.query(
+      `SELECT * FROM articles WHERE topic = $1 ORDER BY ${sort_by} ${order}`,
+      [topic]
+    );
+    return rows;
+  }
   const { rows } = await db.query(
     `SELECT * FROM articles ORDER BY ${sort_by} ${order}`
   );
