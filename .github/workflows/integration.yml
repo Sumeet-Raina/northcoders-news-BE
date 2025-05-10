@@ -23,7 +23,7 @@ jobs:
           cache: "npm"
       - run: npm ci
 
-  unit-tets:
+  unit-tests:
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,6 +38,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm i
-      - run: setup-dbs
-      - run: seed-test
+      - run: npm run setup-dbs
+      - run: npm run seed-test
       - run: npm test
