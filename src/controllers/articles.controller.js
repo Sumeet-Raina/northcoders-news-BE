@@ -21,6 +21,7 @@ exports.getArticlesById = async (request, response) => {
 
 exports.getArticles = async (request, response) => {
   const { sort_by = "created_at", order = "desc", topic } = request.query;
+
   try {
     await selectAllArticles(sort_by, order, topic).then((rows) => {
       response.status(200).send({ articles: rows });
