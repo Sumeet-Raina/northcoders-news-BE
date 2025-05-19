@@ -1,15 +1,9 @@
 const express = require("express");
-const { getApi } = require("./src/controllers/api.controller");
-const { getTopics } = require("./src/controllers/topics.controller");
-const { getUsers } = require("./src/controllers/users.controller");
-const { deleteCommentById } = require("./src/controllers/comments.controller");
-const {
-  getArticlesById,
-  getArticles,
-  getCommentsByArticleId,
-  postCommentByArticleId,
-  patchArticleById,
-} = require("./src/controllers/articles.controller");
+const apiRouter = require("./src/routers/api.router");
+const usersRouter = require("./src/routers/user.router");
+const topicsRouter = require("./src/routers/topics.router");
+const articlesRouter = require("./src/routers/articles.router");
+const commentsRouter = require("./src/routers/comments.router");
 
 const app = express();
 
@@ -19,23 +13,15 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get("/api", getApi);
+app.use("/api", apiRouter);
 
-app.get("/api/users", getUsers);
+app.use("/api/users", usersRouter);
 
-app.get("/api/topics", getTopics);
+app.use("/api/topics", topicsRouter);
 
-app.get("/api/articles/:article_id", getArticlesById);
+app.use("/api/articles", articlesRouter);
 
-app.get("/api/articles", getArticles);
-
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
-
-app.post("/api/articles/:article_id/comments", postCommentByArticleId);
-
-app.patch("/api/articles/:article_id", patchArticleById);
-
-app.delete("/api/comments/:comment_id", deleteCommentById);
+app.use("/api/comments", commentsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
