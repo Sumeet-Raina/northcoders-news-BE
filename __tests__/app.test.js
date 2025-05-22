@@ -59,6 +59,22 @@ describe("GET /api/users", () => {
   });
 });
 
+describe("GET /api/users/:username", () => {
+  test("200: Responds with an user object that contains single user", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .then((response) => {
+        const { user } = response.body;
+
+        expect(user[0]).toEqual({
+          username: "butter_bridge",
+          name: "jonny",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
+      });
+  });
+});
 describe("GET /api/articles/:article_id", () => {
   test("200: Responds with an article object that contains all data for aticle id provided", () => {
     return request(app)
