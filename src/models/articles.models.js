@@ -59,3 +59,24 @@ exports.updateArticleById = async (article_id, inc_votes) => {
   );
   return rows[0];
 };
+
+exports.insertArticle = async ({
+  author,
+  title,
+  body,
+  topic,
+  article_img_url = "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+}) => {
+  const { rows } = await db.query(
+    `INSERT INTO articles 
+      (author, title, body, topic, article_img_url)
+     VALUES 
+      ($1, $2, $3, $4, $5)
+     RETURNING *;`,
+    [author, title, body, topic, article_img_url]
+  );
+
+  const article = rows[0];
+
+  return { ...article, comment_count: 0 };
+};

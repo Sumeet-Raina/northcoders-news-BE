@@ -228,3 +228,36 @@ describe("PATCH /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("POST /api/articles", () => {
+  test("201: creates a new article and returns the article object", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Who is Mitch?",
+      body: "The man behind the legend that is Mitch",
+      topic: "mitch",
+      article_img_url:
+        "/path/to/image/of/mitch/with/one/of/those/balck/strips/across/his/eyes",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .then((response) => {
+        expect(response.status).toBe(201);
+        const { article } = response.body;
+        expect(article).toEqual({
+          article_id: expect.any(Number),
+          author: "butter_bridge",
+          title: "Who is Mitch?",
+          topic: "mitch",
+          body: "The man behind the legend that is Mitch",
+          comment_count: 0,
+          votes: 0,
+          article_img_url:
+            "/path/to/image/of/mitch/with/one/of/those/balck/strips/across/his/eyes",
+          created_at: expect.any(String),
+        });
+      });
+  });
+});
