@@ -207,6 +207,24 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-/* I will add all the validations and status code tests
- once I am done with all db queries, trying to focus on making
- requests and db queries work at the moment. */
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: Responds with an comment object that contains updated votes", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({
+        inc_votes: 10,
+      })
+      .then((response) => {
+        expect(response.status).toBe(200);
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          comment_id: 1,
+          article_id: 9,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 26,
+          created_at: expect.any(String),
+          author: "butter_bridge",
+        });
+      });
+  });
+});

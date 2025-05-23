@@ -10,6 +10,6 @@ exports.selectUserByUserName = async (username) => {
     "SELECT username, name, avatar_url FROM users where username = $1",
     [username]
   );
-  console.log(rows, "<==== R");
+
   return rows;
 };
