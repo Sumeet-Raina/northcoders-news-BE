@@ -4,6 +4,7 @@ const {
   selectCommentsByArticleId,
   insertCommentbyArticleId,
   updateArticleById,
+  insertArticle,
 } = require("../models/articles.models");
 
 exports.getArticlesById = async (request, response) => {
@@ -59,4 +60,18 @@ exports.patchArticleById = async (request, response) => {
   await updateArticleById(id, inc_votes).then((row) => {
     response.status(200).send({ article: row });
   });
+};
+
+exports.postArticle = (req, res, next) => {
+  const { author, title, body, topic, article_img_url } = req.body;
+
+  if (!author || !title || !body || !topic) {
+    return res.status(400).send({ msg: "Missing required fields" });
+  }
+
+  insertArticle({ author, title, body, topic, article_img_url }).then(
+    (article) => {
+      res.status(201).send({ article });
+    }
+  );
 };
