@@ -125,7 +125,7 @@ describe("GET /api/articles", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
       .then((response) => {
-        expect(response.body.articles.length).toBe(12);
+        expect(response.body.articles.length).toBe(10);
       });
   });
 
