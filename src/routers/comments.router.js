@@ -6,7 +6,9 @@ const {
 
 const commentsRouter = express.Router();
 
-commentsRouter.delete("/:comment_id", deleteCommentById);
-commentsRouter.patch("/:comment_id", patchCommentById);
+commentsRouter
+  .route("/:comment_id")
+  .delete(deleteCommentById)
+  .patch(patchCommentById);
 
 module.exports = commentsRouter;
