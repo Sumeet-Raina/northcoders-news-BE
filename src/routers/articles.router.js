@@ -1,17 +1,19 @@
 const express = require("express");
 const {
-  getArticlesById,
+  getArticleById,
   getArticles,
   getCommentsByArticleId,
   postArticle,
   postCommentByArticleId,
   patchArticleById,
+  deleteArticleById,
 } = require("../controllers/articles.controller");
 
 const articlesRouter = express.Router();
 
 articlesRouter.get("/", getArticles);
-articlesRouter.get("/:article_id", getArticlesById);
+articlesRouter.get("/:article_id", getArticleById);
+articlesRouter.delete("/:article_id", deleteArticleById);
 articlesRouter.get("/:article_id/comments", getCommentsByArticleId);
 articlesRouter.post("/:article_id/comments", postCommentByArticleId);
 articlesRouter.post("/", postArticle);

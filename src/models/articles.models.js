@@ -84,3 +84,11 @@ exports.insertArticle = async ({
 
   return { ...article, comment_count: 0 };
 };
+
+exports.deleteArticle = async (id) => {
+  const result = await db.query(
+    `DELETE FROM articles WHERE article_id = $1 RETURNING *`,
+    [id]
+  );
+  return result.rows[0];
+};

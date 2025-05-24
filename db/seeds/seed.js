@@ -48,7 +48,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       author VARCHAR(100) NOT NULL,
       FOREIGN KEY (author) REFERENCES users(username),
-      FOREIGN KEY (article_id) REFERENCES articles(article_id))`);
+      FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE)`);
     })
     .then(() => {
       const usersTableData = userData.map((user) => {

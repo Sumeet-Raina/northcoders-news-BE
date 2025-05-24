@@ -197,12 +197,12 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-  test("Responds with 204 status and no content, deletes the given comment by comment_id", () => {
+  test("204: deletes the comment by comment_id and returns no content", () => {
     return request(app)
       .delete("/api/comments/1")
-      .send()
-      .then((response) => {
-        expect(response.status).toBe(204);
+      .expect(204)
+      .then(() => {
+        return request(app).get("/api/comments/1").expect(404);
       });
   });
 });
@@ -277,6 +277,17 @@ describe("POST /api/topics", () => {
           description: "Good game",
           img_url: null,
         });
+      });
+  });
+});
+
+describe("DELETE /api/articles/:article_id", () => {
+  test("Responds with 204 and deletes the article by article_id", () => {
+    return request(app)
+      .delete("/api/articles/1")
+      .expect(204)
+      .then(() => {
+        return request(app).get("/api/articles/1").expect(404);
       });
   });
 });

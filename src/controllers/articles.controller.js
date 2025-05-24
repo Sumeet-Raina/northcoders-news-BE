@@ -5,9 +5,10 @@ const {
   insertCommentbyArticleId,
   updateArticleById,
   insertArticle,
+  deleteArticle,
 } = require("../models/articles.models");
 
-exports.getArticlesById = async (request, response) => {
+exports.getArticleById = async (request, response) => {
   const id = request.params.article_id;
   await selectArticleById(id).then((rows) => {
     if (rows.length === 0) {
@@ -79,4 +80,12 @@ exports.postArticle = (req, res, next) => {
       res.status(201).send({ article });
     }
   );
+};
+
+exports.deleteArticleById = (request, response) => {
+  const id = request.params.article_id;
+
+  deleteArticle(id).then(() => {
+    response.status(204).send();
+  });
 };
