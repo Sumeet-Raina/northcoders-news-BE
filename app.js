@@ -23,6 +23,10 @@ app.use("/api/articles", articlesRouter);
 
 app.use("/api/comments", commentsRouter);
 
+app.all("/*splat", (req, res, next) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   // Handle known error codes
