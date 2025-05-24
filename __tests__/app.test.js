@@ -261,3 +261,22 @@ describe("POST /api/articles", () => {
       });
   });
 });
+
+describe("POST /api/topics", () => {
+  test("201: Responds with a topic object containing the newly added topic", () => {
+    return request(app)
+      .post("/api/topics")
+      .send({
+        slug: "football",
+        description: "Good game",
+      })
+      .then((response) => {
+        expect(response.status).toBe(201);
+        expect(response.body.topic).toEqual({
+          slug: "football",
+          description: "Good game",
+          img_url: null,
+        });
+      });
+  });
+});
