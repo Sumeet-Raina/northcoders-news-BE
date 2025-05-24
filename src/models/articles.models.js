@@ -22,23 +22,32 @@ exports.selectArticleById = async (articleId) => {
   return rows;
 };
 
-exports.selectAllArticles = async (sort_by, order, topic) => {
+exports.selectAllArticles = async (
+  sort_by,
+  order,
+  topic,
+  limit = 10,
+  page = 1
+) => {
+  const offset = (page - 1) * limit;
+
   if (topic) {
     const { rows } = await db.query(
-      `SELECT * FROM articles WHERE topic = $1 ORDER BY ${sort_by} ${order}`,
-      [topic]
+      `SELECT * FROM articles WHERE topic = $1 ORDER BY ${sort_by} ${order} LIMIT $2 OFFSET $3`,
+      [topic, limit, offset]
     );
     return rows;
   }
   const { rows } = await db.query(
-    `SELECT * FROM articles ORDER BY ${sort_by} ${order}`
+    `SELECT * FROM articles ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2`,
+    [limit, offset]
   );
   return rows;
 };
 
 exports.selectCommentsByArticleId = async (id) => {
   const { rows } = await db.query(
-    "SELECT * FROM comments where article_id = $1 ORDER BY created_at DESC;",
+    `SELECT * FROM comments where article_id = $1 ORDER BY created_at DESC;`,
     [id]
   );
   return rows;
@@ -46,7 +55,7 @@ exports.selectCommentsByArticleId = async (id) => {
 
 exports.insertCommentbyArticleId = async (article_id, author, body) => {
   const { rows } = await db.query(
-    "INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;",
+    `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
     [article_id, author, body]
   );
   return rows[0];
@@ -54,7 +63,7 @@ exports.insertCommentbyArticleId = async (article_id, author, body) => {
 
 exports.updateArticleById = async (article_id, inc_votes) => {
   const { rows } = await db.query(
-    "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 returning *;",
+    `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 returning *;`,
     [inc_votes, article_id]
   );
   return rows[0];
