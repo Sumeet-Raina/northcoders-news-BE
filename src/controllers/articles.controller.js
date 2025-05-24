@@ -22,9 +22,11 @@ exports.getArticlesById = async (request, response) => {
 
 exports.getArticles = async (request, response) => {
   const { sort_by = "created_at", order = "desc", topic } = request.query;
+  const limit = parseInt(request.query.limit) || 10;
+  const page = parseInt(request.query.page) || 1;
 
   try {
-    await selectAllArticles(sort_by, order, topic).then((rows) => {
+    await selectAllArticles(sort_by, order, topic, limit, page).then((rows) => {
       response.status(200).send({ articles: rows });
     });
   } catch (err) {
@@ -34,7 +36,10 @@ exports.getArticles = async (request, response) => {
 
 exports.getCommentsByArticleId = async (request, response) => {
   const id = request.params.article_id;
-  await selectCommentsByArticleId(id).then((rows) => {
+  const limit = parseInt(request.query.limit) || 10;
+  const page = parseInt(request.query.page) || 1;
+
+  await selectCommentsByArticleId(id, limit, page).then((rows) => {
     if (rows.length === 0) {
       const error = new Error("Article not found");
       error.status = 404;

@@ -22,13 +22,7 @@ exports.selectArticleById = async (articleId) => {
   return rows;
 };
 
-exports.selectAllArticles = async (
-  sort_by,
-  order,
-  topic,
-  limit = 10,
-  page = 1
-) => {
+exports.selectAllArticles = async (sort_by, order, topic, limit, page) => {
   const offset = (page - 1) * limit;
 
   if (topic) {
@@ -45,10 +39,11 @@ exports.selectAllArticles = async (
   return rows;
 };
 
-exports.selectCommentsByArticleId = async (id) => {
+exports.selectCommentsByArticleId = async (id, limit, page) => {
+  const offset = (page - 1) * limit;
   const { rows } = await db.query(
-    `SELECT * FROM comments where article_id = $1 ORDER BY created_at DESC;`,
-    [id]
+    `SELECT * FROM comments where article_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3;`,
+    [id, limit, offset]
   );
   return rows;
 };

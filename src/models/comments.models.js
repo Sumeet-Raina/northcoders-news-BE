@@ -12,6 +12,5 @@ exports.updateCommentById = async (comment_id, inc_votes) => {
     "UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 returning *;",
     [inc_votes, comment_id]
   );
-  console.log(rows[0], "<===model");
   return rows[0];
 };
