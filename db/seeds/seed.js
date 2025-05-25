@@ -1,8 +1,21 @@
 const db = require("../connection");
 const format = require("pg-format");
+const seedSchema = require("../validation/seedSchema");
 const { convertTimestampToDate, createRef } = require("../seeds/utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
+  const { error, value } = seedSchema.validate(
+    { topicData, userData, articleData, commentData },
+    { abortEarly: false }
+  );
+
+  if (error) {
+    console.error("Seed data validation failed:", error.details);
+    return Promise.reject(error);
+  }
+
+  ({ topicData, userData, articleData, commentData } = value);
+
   return db
     .query(`DROP TABLE IF EXISTS comments;`)
     .then(() => {
