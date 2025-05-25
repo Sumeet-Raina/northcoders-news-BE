@@ -8,84 +8,86 @@ const {
   deleteArticle,
 } = require("../models/articles.models");
 
-exports.getArticleById = async (request, response) => {
-  const id = request.params.article_id;
-  await selectArticleById(id).then((rows) => {
-    if (rows.length === 0) {
-      const error = new Error("Article not found");
-      error.status = 404;
-      throw error;
-    }
-
-    response.status(200).send(rows);
-  });
-};
-
-exports.getArticles = async (request, response) => {
-  const { sort_by = "created_at", order = "desc", topic } = request.query;
-  const limit = parseInt(request.query.limit) || 10;
-  const page = parseInt(request.query.page) || 1;
-
+exports.getArticleById = async (req, res, next) => {
   try {
-    await selectAllArticles(sort_by, order, topic, limit, page).then((rows) => {
-      response.status(200).send({ articles: rows });
-    });
+    const rows = await selectArticleById(req.articleId);
+    if (!rows.length) {
+      const err = new Error("Article not found");
+      err.status = 404;
+      throw err;
+    }
+    return res.status(200).json(rows[0]);
   } catch (err) {
-    next(err);
+    return next(err);
+  }
+};
+exports.getArticles = async (req, res, next) => {
+  try {
+    const { sort_by = "created_at", order = "desc", topic } = req.query;
+
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const page = parseInt(req.query.page, 10) || 1;
+
+    const rows = await selectAllArticles(sort_by, order, topic, limit, page);
+    return res.status(200).json({ articles: rows });
+  } catch (err) {
+    return next(err);
   }
 };
 
-exports.getCommentsByArticleId = async (request, response) => {
-  const id = request.params.article_id;
-  const limit = parseInt(request.query.limit) || 10;
-  const page = parseInt(request.query.page) || 1;
+exports.getCommentsByArticleId = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const page = parseInt(req.query.page, 10) || 1;
 
-  await selectCommentsByArticleId(id, limit, page).then((rows) => {
-    if (rows.length === 0) {
-      const error = new Error("Article not found");
-      error.status = 404;
-      throw error;
+    const rows = await selectCommentsByArticleId(req.articleId, limit, page);
+    if (!rows.length) {
+      const err = new Error("Article not found");
+      err.status = 404;
+      throw err;
     }
-    response.status(200).send({ comments: rows });
-  });
-};
-
-exports.postCommentByArticleId = async (request, response) => {
-  const { article_id } = request.params;
-  const { username: author, body } = request.body;
-
-  await insertCommentbyArticleId(article_id, author, body).then((row) => {
-    response.status(201).send({ comment: row });
-  });
-};
-
-exports.patchArticleById = async (request, response) => {
-  const { article_id: id } = request.params;
-  const { inc_votes } = request.body;
-
-  await updateArticleById(id, inc_votes).then((row) => {
-    response.status(200).send({ article: row });
-  });
-};
-
-exports.postArticle = (req, res, next) => {
-  const { author, title, body, topic, article_img_url } = req.body;
-
-  if (!author || !title || !body || !topic) {
-    return res.status(400).send({ msg: "Missing required fields" });
+    return res.status(200).json({ comments: rows });
+  } catch (err) {
+    return next(err);
   }
-
-  insertArticle({ author, title, body, topic, article_img_url }).then(
-    (article) => {
-      res.status(201).send({ article });
-    }
-  );
 };
 
-exports.deleteArticleById = (request, response) => {
-  const id = request.params.article_id;
+exports.postCommentByArticleId = async (req, res, next) => {
+  try {
+    const { username: author, body } = req.validatedBody;
+    const comment = await insertCommentbyArticleId(req.articleId, author, body);
+    return res.status(201).json({ comment });
+  } catch (err) {
+    return next(err);
+  }
+};
 
-  deleteArticle(id).then(() => {
-    response.status(204).send();
-  });
+exports.patchArticleById = async (req, res, next) => {
+  try {
+    const article = await updateArticleById(
+      req.articleId,
+      req.patchData.inc_votes
+    );
+    return res.status(200).json({ article });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.postArticle = async (req, res, next) => {
+  try {
+    const article = await insertArticle(req.validatedBody);
+    return res.status(201).json({ article });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.deleteArticleById = async (req, res, next) => {
+  try {
+    await deleteArticle(req.articleId);
+    return res.sendStatus(204);
+  } catch (err) {
+    return next(err);
+  }
 };

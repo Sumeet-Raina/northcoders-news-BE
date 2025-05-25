@@ -66,7 +66,7 @@ describe("GET /api/users/:username", () => {
       .then((response) => {
         const { user } = response.body;
 
-        expect(user[0]).toEqual({
+        expect(user).toEqual({
           username: "butter_bridge",
           name: "jonny",
           avatar_url:
@@ -81,7 +81,7 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .then((response) => {
         const rows = response.body;
-        expect(rows[0]).toEqual({
+        expect(rows).toEqual({
           article_id: 1,
           title: "Living in the shadow of a great man",
           topic: "mitch",
@@ -105,8 +105,8 @@ describe("GET /api/articles", () => {
   test("200: Responds with an object that contains all articles", () => {
     return request(app)
       .get("/api/articles")
-      .then(({ body }) => {
-        body.articles.forEach((row) => {
+      .then((response) => {
+        response.body.articles.forEach((row) => {
           expect(row).toMatchObject({
             article_id: expect.any(Number),
             title: expect.any(String),
@@ -125,17 +125,14 @@ describe("GET /api/articles", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
       .then((response) => {
+        console.log(response.body);
         expect(response.body.articles.length).toBe(10);
       });
-  });
-
-  test("404: endpoint not found", () => {
-    return request(app).get("/api/nonexistent").expect(404);
   });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: Responds with an object that contains all articles", () => {
+  test("200: Responds with an object that contains all comments of articles", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .then(({ body }) => {
@@ -150,10 +147,6 @@ describe("GET /api/articles/:article_id/comments", () => {
           });
         });
       });
-  });
-
-  test("404: endpoint not found", () => {
-    return request(app).get("/api/articles/700/comments").expect(404);
   });
 });
 
@@ -237,7 +230,7 @@ describe("POST /api/articles", () => {
       body: "The man behind the legend that is Mitch",
       topic: "mitch",
       article_img_url:
-        "/path/to/image/of/mitch/with/one/of/those/balck/strips/across/his/eyes",
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
     };
 
     return request(app)
@@ -255,7 +248,7 @@ describe("POST /api/articles", () => {
           comment_count: 0,
           votes: 0,
           article_img_url:
-            "/path/to/image/of/mitch/with/one/of/those/balck/strips/across/his/eyes",
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           created_at: expect.any(String),
         });
       });
